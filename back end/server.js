@@ -13,45 +13,50 @@ import cityRoutes from './routes/cityRoutes.js';
 // ===== IMPORT MODELS =====
 import Location from "./models/Location.js";
 
+// Load environment variables
 dotenv.config();
 
-const app = express();
-
-// ===== MONGODB CONNECTION (Serverless Optimized) =====
+// Connect to MongoDB
 const connectDB = async () => {
-  if (mongoose.connection.readyState >= 1) return;
-  
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI);
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (err) {
     console.error("❌ MongoDB Connection Error:", err.message);
-    // In serverless, we don't process.exit(1) as it kills the function instance
+    process.exit(1); // Exit process with failure
   }
 };
 
+// Initialize connection
+connectDB();
+
+// Initialize Express app
+const app = express();
+
 // ===== MIDDLEWARE =====
-app.use(express.json()); 
+app.use(express.json()); // Allows the server to accept JSON data in the body (req.body)
 app.use(cors({
-  origin: ["https://tourest-rho.vercel.app"], 
+  origin: ["https://tourest-rho.vercel.app/"], // Allow your React/Vite frontend
   credentials: true
 }));
 
-// Middleware to ensure DB is connected before handling requests
-app.use(async (req, res, next) => {
-  await connectDB();
-  next();
-});
-
 // ================= ROUTES =================
 
+// 1. Auth Routes (Login/Register)
 app.use("/api/auth", authRoutes);
-app.use("/api/bookings", bookingRoutes);
-app.use("/api/packages", packageRoutes);
-app.use("/api/transport", transportRoutes);
-app.use("/api/cities", cityRoutes);
 
+// 2. Booking Routes (Creates and fetches bookings + sends emails)
+app.use("/api/bookings", bookingRoutes);
+
+// 3. Package Routes (Fetches tour packages)
+app.use("/api/packages", packageRoutes);
+
+// 4. Transport Routes (Live APIs) - ✅ Moved to the correct spot!
+app.use("/api/transport", transportRoutes);
+
+// 5. Location Routes (Fetches seeded locations for the Map/Destinations)
 app.get("/api/locations", async (req, res) => {
+  app.use('/api/cities', cityRoutes);
   try {
     const data = await Location.find();
     res.status(200).json(data);
@@ -61,17 +66,14 @@ app.get("/api/locations", async (req, res) => {
   }
 });
 
+// Basic route to check if server is running
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
 // ================= START SERVER =================
-// Vercel doesn't use app.listen(), it uses the exported app.
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-  });
-}
+const PORT = process.env.PORT || 5000;
 
-export default app;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+});
