@@ -34,9 +34,10 @@ connectDB();
 const app = express();
 
 // ===== MIDDLEWARE =====
-app.use(express.json()); // Allows the server to accept JSON data in the body (req.body)
+app.use(express.json()); 
 app.use(cors({
-  origin: ["https://tourest-rho.vercel.app/"], // Allow your React/Vite frontend
+  // FIXED: Removed the trailing slash from the URL
+  origin: ["https://tourest-rho.vercel.app"], 
   credentials: true
 }));
 
@@ -45,18 +46,20 @@ app.use(cors({
 // 1. Auth Routes (Login/Register)
 app.use("/api/auth", authRoutes);
 
-// 2. Booking Routes (Creates and fetches bookings + sends emails)
+// 2. Booking Routes
 app.use("/api/bookings", bookingRoutes);
 
-// 3. Package Routes (Fetches tour packages)
+// 3. Package Routes
 app.use("/api/packages", packageRoutes);
 
-// 4. Transport Routes (Live APIs) - ✅ Moved to the correct spot!
+// 4. Transport Routes 
 app.use("/api/transport", transportRoutes);
 
-// 5. Location Routes (Fetches seeded locations for the Map/Destinations)
+// 5. City Routes - FIXED: Moved this OUTSIDE of the location GET request
+app.use("/api/cities", cityRoutes);
+
+// 6. Location Routes 
 app.get("/api/locations", async (req, res) => {
-  app.use('/api/cities', cityRoutes);
   try {
     const data = await Location.find();
     res.status(200).json(data);
