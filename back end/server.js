@@ -36,7 +36,7 @@ const app = express();
 // ===== MIDDLEWARE =====
 app.use(express.json()); // Allows the server to accept JSON data in the body (req.body)
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174"], // Allow your React/Vite frontend
+  origin: ["https://tourest-rho.vercel.app/"], // Allow your React/Vite frontend
   credentials: true
 }));
 
