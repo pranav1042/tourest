@@ -13,52 +13,44 @@ import cityRoutes from './routes/cityRoutes.js';
 // ===== IMPORT MODELS =====
 import Location from "./models/Location.js";
 
-// Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
+const app = express();
+
+// ===== MONGODB CONNECTION (Serverless Optimized) =====
 const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) return;
+  
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI);
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (err) {
     console.error("❌ MongoDB Connection Error:", err.message);
-    process.exit(1); // Exit process with failure
+    // In serverless, we don't process.exit(1) as it kills the function instance
   }
 };
-
-// Initialize connection
-connectDB();
-
-// Initialize Express app
-const app = express();
 
 // ===== MIDDLEWARE =====
 app.use(express.json()); 
 app.use(cors({
-  // FIXED: Removed the trailing slash from the URL
   origin: ["https://tourest-rho.vercel.app"], 
   credentials: true
 }));
 
+// Middleware to ensure DB is connected before handling requests
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
+
 // ================= ROUTES =================
 
-// 1. Auth Routes (Login/Register)
 app.use("/api/auth", authRoutes);
-
-// 2. Booking Routes
 app.use("/api/bookings", bookingRoutes);
-
-// 3. Package Routes
 app.use("/api/packages", packageRoutes);
-
-// 4. Transport Routes 
 app.use("/api/transport", transportRoutes);
-
-// 5. City Routes - FIXED: Moved this OUTSIDE of the location GET request
 app.use("/api/cities", cityRoutes);
 
-// 6. Location Routes 
 app.get("/api/locations", async (req, res) => {
   try {
     const data = await Location.find();
@@ -69,15 +61,14 @@ app.get("/api/locations", async (req, res) => {
   }
 });
 
-// Basic route to check if server is running
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
 // ================= START SERVER =================
-const PORT = process.env.PORT || 5000;
-
+// Vercel doesn't use app.listen(), it uses the exported app.
 if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
   });
