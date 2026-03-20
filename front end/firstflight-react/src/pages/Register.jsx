@@ -27,7 +27,7 @@ const Register = () => {
 
         try {
             // Adjust URL to match your server port (5000)
-            const res = await axios.post('http://localhost:5000/api/auth/register', formData);
+            const res = await axios.post('https://tourest-cidj.vercel.app/api/auth/register', formData);
 
             Swal.fire({
                 icon: 'success',

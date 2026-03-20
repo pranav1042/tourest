@@ -43,7 +43,7 @@ const TransportModal = ({ place, onClose }) => {
       if (formData.originCity.length >= 2) {
         try {
           // Call your backend API, which securely fetches from the internet
-          const res = await axios.get(`http://localhost:5000/api/cities/suggest?q=${formData.originCity}`);
+          const res = await axios.get(`https://tourest-cidj.vercel.app/api/cities/suggest?q=${formData.originCity}`);
           if (res.data.success) {
             setFilteredCities(res.data.cities);
             setShowSuggestions(true);
@@ -86,7 +86,7 @@ const TransportModal = ({ place, onClose }) => {
     setHasSearched(true);
 
     try {
-      const res = await axios.get(`http://localhost:5000/api/transport/search`, {
+      const res = await axios.get(`https://tourest-cidj.vercel.app/api/transport/search`, {
         params: {
           origin: formData.originCity,
           destination: place?.city,
@@ -180,7 +180,7 @@ const TransportModal = ({ place, onClose }) => {
       const storedUser = localStorage.getItem('user');
       const userObj = storedUser && storedUser !== 'undefined' ? JSON.parse(storedUser) : null;
 
-      const response = await axios.post('http://localhost:5000/api/bookings/initiate', { 
+      const response = await axios.post('https://tourest-cidj.vercel.app/api/bookings/initiate', { 
         packageId: place?._id || "TRN-" + Math.floor(Math.random() * 10000),
         packageTitle: `Transport from ${formData.originCity} to ${place?.city}`,
         formData: { 
@@ -221,7 +221,7 @@ const TransportModal = ({ place, onClose }) => {
   const startPolling = (id) => {
     pollingInterval.current = setInterval(async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/bookings/status/${id}`);
+        const res = await axios.get(`https://tourest-cidj.vercel.app/api/bookings/status/${id}`);
         
         if (res.data.status === 'approved') {
           // STOP POLLING FIRST
@@ -230,7 +230,7 @@ const TransportModal = ({ place, onClose }) => {
           // Wait for the email to send BEFORE changing the step
           try {
             console.log("Payment approved. Sending email...");
-            await axios.post('http://localhost:5000/api/bookings/send-email', {
+            await axios.post('https://tourest-cidj.vercel.app/api/bookings/send-email', {
               email: formData.email,
               fullName: formData.name, // Mapped to the correct state variable
               bookingRef: id,

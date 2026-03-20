@@ -43,7 +43,7 @@ const PackageDetailsModal = ({ onClose, selectedCity }) => {
       setIsLoadingData(true);
       setError(null);
       try {
-        const response = await axios.get(`http://localhost:5000/api/packages/${selectedCity}`);
+        const response = await axios.get(`https://tourest-cidj.vercel.app/api/packages/${selectedCity}`);
         const data = response.data;
         
         setCityData(data);
@@ -118,7 +118,7 @@ const PackageDetailsModal = ({ onClose, selectedCity }) => {
       const storedUser = localStorage.getItem('user');
       const userObj = storedUser && storedUser !== 'undefined' ? JSON.parse(storedUser) : null;
 
-      const response = await axios.post('http://localhost:5000/api/bookings/initiate', { 
+      const response = await axios.post('https://tourest-cidj.vercel.app/api/bookings/initiate', { 
         packageId: cityData.cityId, 
         packageTitle: cityData.title,
         formData: { ...formData, phone: `+91${formData.phone}` },
@@ -146,7 +146,7 @@ const PackageDetailsModal = ({ onClose, selectedCity }) => {
   const startPolling = (id) => {
     pollingInterval.current = setInterval(async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/bookings/status/${id}`);
+        const res = await axios.get(`https://tourest-cidj.vercel.app/api/bookings/status/${id}`);
         
         if (res.data.status === 'approved') {
           clearInterval(pollingInterval.current); // Stop polling
@@ -154,7 +154,7 @@ const PackageDetailsModal = ({ onClose, selectedCity }) => {
           setStep(7); // Move to Success Screen
 
           // --- TRIGGER EMAIL SENDING API ---
-          await axios.post('http://localhost:5000/api/bookings/send-email', {
+          await axios.post('https://tourest-cidj.vercel.app/api/bookings/send-email', {
             email: formData.email,
             fullName: formData.fullName,
             bookingRef: id,

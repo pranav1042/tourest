@@ -21,7 +21,7 @@ const Packages = () => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/packages');
+        const response = await axios.get('https://tourest-cidj.vercel.app/api/packages');
         setPackages(response.data);
         setIsLoading(false);
       } catch (err) {

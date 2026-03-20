@@ -17,7 +17,7 @@ const TransportSearch = () => {
     setResults(null);
 
     try {
-      const res = await axios.get(`http://localhost:5000/api/transport/search`, {
+      const res = await axios.get(`https://tourest-cidj.vercel.app/api/transport/search`, {
         params: searchParams
       });
 

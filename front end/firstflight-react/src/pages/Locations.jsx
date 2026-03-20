@@ -14,7 +14,7 @@ const Locations = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/locations');
+        const res = await axios.get('https://tourest-cidj.vercel.app/api/locations');
         setDestinations(res.data);
       } catch (err) {
         console.error("Error fetching locations:", err);

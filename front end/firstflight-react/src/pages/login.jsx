@@ -24,7 +24,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const response = await axios.post('https://tourest-cidj.vercel.app/api/auth/login', formData);
 
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -45,7 +45,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/forgot-password', { email: resetData.email });
+      const response = await axios.post('https://tourest-cidj.vercel.app/api/auth/forgot-password', { email: resetData.email });
       Swal.fire({ icon: 'success', title: 'OTP Sent!', text: response.data.msg, confirmButtonColor: '#C5A059' });
       setForgotStep(2); // Move to Step 2 (Enter OTP)
     } catch (error) {
@@ -66,7 +66,7 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/reset-password', {
+      const response = await axios.post('https://tourest-cidj.vercel.app/api/auth/reset-password', {
         email: resetData.email,
         otp: resetData.otp,
         newPassword: resetData.newPassword

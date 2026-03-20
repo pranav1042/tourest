@@ -18,7 +18,7 @@ const ResetPassword = () => {
 
     setLoading(true);
     try {
-      const response = await axios.put(`http://localhost:5000/api/auth/reset-password/${token}`, { password });
+      const response = await axios.put(`https://tourest-cidj.vercel.app/api/auth/reset-password/${token}`, { password });
       
       Swal.fire({ icon: 'success', title: 'Success!', text: response.data.msg, confirmButtonColor: '#C5A059' });
       navigate('/login'); // Send them to login with their new password

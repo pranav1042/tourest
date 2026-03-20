@@ -49,7 +49,7 @@ const Profile = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put('http://localhost:5000/api/auth/profile', editForm, {
+      const response = await axios.put('https://tourest-cidj.vercel.app/api/auth/profile', editForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -85,7 +85,7 @@ const Profile = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put('http://localhost:5000/api/auth/change-password', passwordForm, {
+      const response = await axios.put('https://tourest-cidj.vercel.app/api/auth/change-password', passwordForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

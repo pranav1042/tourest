@@ -30,7 +30,7 @@ const MyBookings = () => {
         const safeName = userObj.name || userObj.fullName || '';
 
         // Start building the URL with email and name
-        let queryUrl = `http://localhost:5000/api/bookings/my-bookings?email=${encodeURIComponent(safeEmail)}&name=${encodeURIComponent(safeName)}`;
+        let queryUrl = `https://tourest-cidj.vercel.app/api/bookings/my-bookings?email=${encodeURIComponent(safeEmail)}&name=${encodeURIComponent(safeName)}`;
         
         // ONLY append userId if it is NOT empty and NOT the word "undefined"
         if (safeUserId && safeUserId !== 'undefined') {
